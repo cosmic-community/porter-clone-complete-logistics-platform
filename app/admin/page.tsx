@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { getSession } from '@/lib/auth'
 import { getOrders, getDrivers, getVehicleTypes } from '@/lib/cosmic'
 import Link from 'next/link'
+import { Order } from '@/types'
 
 export default async function AdminPage() {
   const session = await getSession()
@@ -96,7 +97,7 @@ export default async function AdminPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-600 text-sm mb-1">Revenue</p>
-                <p className="text-3xl font-bold text-gray-900">₹{orders.reduce((sum, order) => sum + parseFloat(order.metadata?.total_amount || '0'), 0).toLocaleString()}</p>
+                <p className="text-3xl font-bold text-gray-900">₹{orders.reduce((sum: number, order: Order) => sum + parseFloat(order.metadata?.total_amount || '0'), 0).toLocaleString()}</p>
               </div>
               <div className="bg-orange-100 p-3 rounded-lg">
                 <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -166,7 +167,7 @@ export default async function AdminPage() {
                 </tr>
               </thead>
               <tbody>
-                {orders.slice(0, 5).map((order) => (
+                {orders.slice(0, 5).map((order: Order) => (
                   <tr key={order.id} className="border-b border-gray-100 hover:bg-gray-50">
                     <td className="py-3 px-4 text-sm">{order.metadata?.order_number}</td>
                     <td className="py-3 px-4 text-sm">{order.metadata?.customer_name}</td>
