@@ -141,8 +141,10 @@ export async function getServiceAreas() {
 }
 
 // Fetch user by email
-export async function getUserByEmail(email: string) {
+export async function getUserByEmail(email: string): Promise<User | null> {
   try {
+    console.log('Fetching user by email from Cosmic:', email)
+    
     const response = await cosmic.objects
       .find({ 
         type: 'users',
@@ -151,15 +153,24 @@ export async function getUserByEmail(email: string) {
       .props(['id', 'title', 'slug', 'metadata'])
       .depth(1);
     
+    console.log('Cosmic response:', response)
+    
     if (response.objects && response.objects.length > 0) {
+      console.log('User found in Cosmic:', response.objects[0].id)
       return response.objects[0] as User;
     }
+    
+    console.log('No user found in Cosmic for email:', email)
     return null;
   } catch (error) {
+    console.error('Error fetching user by email:', error)
+    
     if (hasStatus(error) && error.status === 404) {
+      console.log('404 error - no users found in Cosmic')
       return null;
     }
-    throw new Error('Failed to fetch user');
+    
+    throw new Error(`Failed to fetch user: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 
@@ -192,6 +203,8 @@ export async function createUser(userData: {
   role: 'Admin' | 'Customer' | 'Driver';
 }) {
   try {
+    console.log('Creating new user in Cosmic:', userData.email)
+    
     const newUser = await cosmic.objects.insertOne({
       type: 'users',
       title: userData.full_name,
@@ -205,8 +218,11 @@ export async function createUser(userData: {
       }
     });
     
+    console.log('User created successfully:', newUser.object.id)
+    
     return newUser.object as User;
   } catch (error) {
-    throw new Error('Failed to create user');
+    console.error('Error creating user:', error)
+    throw new Error(`Failed to create user: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
