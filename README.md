@@ -19,18 +19,29 @@ A comprehensive logistics and delivery platform that replicates all core Porter 
 - 📱 **Responsive Design** - Works seamlessly on all devices
 - 🔐 **Secure Authentication** - Role-based access for customers, drivers, and admins
 
-## Demo Credentials
+## Quick Start - Admin Setup
 
-### Admin Access
+### First Time Setup
+
+1. After deploying the application, navigate to `/setup-admin`
+2. Create your first admin account:
+   - **Full Name**: Admin User (or your name)
+   - **Email**: admin@porterclone.com (or your email)
+   - **Password**: admin123 (or your secure password)
+3. Click "Create Admin User"
+4. You'll be redirected to the login page
+5. Sign in with your new admin credentials
+
+### Demo Credentials
+
+After setup, you can use these default credentials:
 - **Email**: `admin@porterclone.com`
 - **Password**: `admin123`
 - **Access**: Full administrative dashboard at `/admin`
 
-### Customer Access
-You can register a new customer account at `/register` or use the registration form to create a test account.
-
-### Driver Access
-Register as a driver by selecting "Driver" role during registration at `/register`.
+### Customer & Driver Access
+- Register new accounts at `/register`
+- Select role during registration (Customer or Driver)
 
 ## Clone this Project
 
