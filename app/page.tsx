@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { getVehicleTypes } from '@/lib/cosmic'
+import { VehicleType } from '@/types'
 import BookingForm from '@/components/BookingForm'
 import Header from '@/components/Header'
 import VehicleCard from '@/components/VehicleCard'
@@ -76,7 +77,7 @@ export default async function HomePage() {
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">Our Fleet</h2>
           <div className="grid md:grid-cols-3 gap-8">
-            {vehicleTypes.map((vehicle) => (
+            {vehicleTypes.map((vehicle: VehicleType) => (
               <VehicleCard key={vehicle.id} vehicle={vehicle} />
             ))}
           </div>

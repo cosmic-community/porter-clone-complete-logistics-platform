@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { getOrders, getDrivers, getVehicleTypes } from '@/lib/cosmic'
+import { Order, Driver } from '@/types'
 import Header from '@/components/Header'
 import DashboardStats from '@/components/DashboardStats'
 import RecentOrders from '@/components/RecentOrders'
@@ -11,21 +12,21 @@ export default async function DashboardPage() {
     getVehicleTypes(),
   ])
   
-  const activeOrders = orders.filter(order => 
+  const activeOrders = orders.filter((order: Order) => 
     order.metadata?.status && !['Delivered', 'Cancelled'].includes(order.metadata.status)
   )
   
-  const availableDrivers = drivers.filter(driver => 
+  const availableDrivers = drivers.filter((driver: Driver) => 
     driver.metadata?.status === 'Available'
   )
   
   const todayRevenue = orders
-    .filter(order => {
+    .filter((order: Order) => {
       const orderDate = new Date(order.created_at || '')
       const today = new Date()
       return orderDate.toDateString() === today.toDateString()
     })
-    .reduce((sum, order) => {
+    .reduce((sum: number, order: Order) => {
       const amount = parseFloat(order.metadata?.total_amount || '0')
       return sum + amount
     }, 0)

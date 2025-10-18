@@ -2,12 +2,12 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Order } from '@/types'
+import { Order, OrderStatus } from '@/types'
 import { formatDateTime, getStatusColor, formatCurrency } from '@/lib/utils'
 
 export default function OrderDetails({ order }: { order: Order }) {
   const [updating, setUpdating] = useState(false)
-  const [currentStatus, setCurrentStatus] = useState(order.metadata?.status || 'Pending')
+  const [currentStatus, setCurrentStatus] = useState<OrderStatus>(order.metadata?.status || 'Pending')
   
   const metadata = order.metadata
   
@@ -15,7 +15,7 @@ export default function OrderDetails({ order }: { order: Order }) {
     return <div className="card">No order details available.</div>
   }
   
-  const handleStatusUpdate = async (newStatus: string) => {
+  const handleStatusUpdate = async (newStatus: OrderStatus) => {
     setUpdating(true)
     
     try {
@@ -75,7 +75,7 @@ export default function OrderDetails({ order }: { order: Order }) {
       <div className="card">
         <h2 className="text-xl font-bold mb-4">Update Status</h2>
         <div className="flex flex-wrap gap-2">
-          {['Pending', 'Confirmed', 'Driver Assigned', 'In Transit', 'Delivered', 'Cancelled'].map((status) => (
+          {(['Pending', 'Confirmed', 'Driver Assigned', 'In Transit', 'Delivered', 'Cancelled'] as OrderStatus[]).map((status) => (
             <button
               key={status}
               onClick={() => handleStatusUpdate(status)}

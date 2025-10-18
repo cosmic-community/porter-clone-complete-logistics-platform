@@ -1,4 +1,5 @@
 import { getVehicleTypes } from '@/lib/cosmic'
+import { VehicleType } from '@/types'
 import Header from '@/components/Header'
 import VehicleCard from '@/components/VehicleCard'
 
@@ -16,7 +17,7 @@ export default async function FleetPage() {
         </div>
         
         <div className="grid md:grid-cols-3 gap-8">
-          {vehicleTypes.map((vehicle) => (
+          {vehicleTypes.map((vehicle: VehicleType) => (
             <VehicleCard key={vehicle.id} vehicle={vehicle} />
           ))}
         </div>

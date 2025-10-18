@@ -1,4 +1,5 @@
 import { createBucketClient } from '@cosmicjs/sdk'
+import { Order } from '@/types'
 
 export const cosmic = createBucketClient({
   bucketSlug: process.env.COSMIC_BUCKET_SLUG as string,
@@ -36,7 +37,7 @@ export async function getOrders() {
       .props(['id', 'title', 'slug', 'metadata', 'created_at'])
       .depth(1);
     
-    const orders = response.objects.sort((a, b) => {
+    const orders = response.objects.sort((a: Order, b: Order) => {
       const dateA = new Date(a.created_at || '').getTime();
       const dateB = new Date(b.created_at || '').getTime();
       return dateB - dateA;
