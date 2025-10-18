@@ -21,15 +21,19 @@ export async function POST(request: Request) {
     if (!user) {
       console.log('User not found for email:', email)
       return NextResponse.json(
-        { success: false, error: 'Invalid email or password' },
+        { 
+          success: false, 
+          error: 'No account found with this email. Please check your email or register a new account.',
+          code: 'USER_NOT_FOUND'
+        },
         { status: 401 }
       )
     }
 
-    console.log('User found:', user.id)
+    console.log('User found:', user.id, 'with role:', user.metadata?.role)
 
     // Check if user is active
-    if (!user.metadata?.is_active) {
+    if (user.metadata?.is_active === false) {
       console.log('User account is inactive:', user.id)
       return NextResponse.json(
         { success: false, error: 'Account is inactive. Please contact support.' },
@@ -41,7 +45,11 @@ export async function POST(request: Request) {
     if (!user.metadata?.password_hash) {
       console.error('User has no password hash:', user.id)
       return NextResponse.json(
-        { success: false, error: 'Account configuration error. Please contact support.' },
+        { 
+          success: false, 
+          error: 'Account setup incomplete. Please contact support or register again.',
+          code: 'NO_PASSWORD'
+        },
         { status: 500 }
       )
     }
@@ -56,7 +64,7 @@ export async function POST(request: Request) {
     if (!isPasswordValid) {
       console.log('Invalid password for user:', user.id)
       return NextResponse.json(
-        { success: false, error: 'Invalid email or password' },
+        { success: false, error: 'Invalid password. Please try again.' },
         { status: 401 }
       )
     }
@@ -89,7 +97,11 @@ export async function POST(request: Request) {
     const errorMessage = error instanceof Error ? error.message : 'An error occurred during login'
     
     return NextResponse.json(
-      { success: false, error: `Login failed: ${errorMessage}` },
+      { 
+        success: false, 
+        error: `Login failed: ${errorMessage}`,
+        code: 'SERVER_ERROR'
+      },
       { status: 500 }
     )
   }

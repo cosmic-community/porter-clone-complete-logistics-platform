@@ -144,6 +144,7 @@ export async function getServiceAreas() {
 export async function getUserByEmail(email: string): Promise<User | null> {
   try {
     console.log('Fetching user by email from Cosmic:', email)
+    console.log('Using bucket:', process.env.COSMIC_BUCKET_SLUG)
     
     const response = await cosmic.objects
       .find({ 
@@ -153,20 +154,23 @@ export async function getUserByEmail(email: string): Promise<User | null> {
       .props(['id', 'title', 'slug', 'metadata'])
       .depth(1);
     
-    console.log('Cosmic response:', response)
+    console.log('Cosmic API response:', JSON.stringify(response, null, 2))
     
     if (response.objects && response.objects.length > 0) {
       console.log('User found in Cosmic:', response.objects[0].id)
+      console.log('User metadata:', JSON.stringify(response.objects[0].metadata, null, 2))
       return response.objects[0] as User;
     }
     
     console.log('No user found in Cosmic for email:', email)
+    console.log('Total users found:', response.objects ? response.objects.length : 0)
     return null;
   } catch (error) {
     console.error('Error fetching user by email:', error)
+    console.error('Error details:', JSON.stringify(error, null, 2))
     
     if (hasStatus(error) && error.status === 404) {
-      console.log('404 error - no users found in Cosmic')
+      console.log('404 error - no users object type exists or no users found in Cosmic')
       return null;
     }
     
