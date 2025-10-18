@@ -76,6 +76,20 @@ export interface Driver extends CosmicObject {
   };
 }
 
+// User Profile
+export interface User extends CosmicObject {
+  type: 'users';
+  metadata: {
+    full_name: string;
+    email: string;
+    password_hash: string;
+    phone_number?: string;
+    role: UserRole;
+    driver_profile?: Driver;
+    is_active: boolean;
+  };
+}
+
 // Service Area
 export interface ServiceArea extends CosmicObject {
   type: 'service-areas';
@@ -144,6 +158,7 @@ export type DriverStatus = 'Available' | 'On Trip' | 'Offline';
 export type IssueType = 'Payment Issue' | 'Driver Issue' | 'Delivery Issue' | 'App Issue' | 'Other';
 export type Priority = 'Low' | 'Medium' | 'High' | 'Urgent';
 export type TicketStatus = 'Open' | 'In Progress' | 'Resolved' | 'Closed';
+export type UserRole = 'Admin' | 'Customer' | 'Driver';
 
 // API response types
 export interface CosmicResponse<T> {
@@ -166,5 +181,17 @@ export function isVehicleType(obj: CosmicObject): obj is VehicleType {
   return obj.type === 'vehicle-types';
 }
 
+export function isUser(obj: CosmicObject): obj is User {
+  return obj.type === 'users';
+}
+
 // Utility types
 export type CreateOrderData = Omit<Order, 'id' | 'created_at' | 'modified_at'>;
+
+// Session user type
+export interface SessionUser {
+  id: string;
+  email: string;
+  name: string;
+  role: UserRole;
+}

@@ -1,5 +1,5 @@
 import { createBucketClient } from '@cosmicjs/sdk'
-import { Order } from '@/types'
+import { Order, User } from '@/types'
 
 export const cosmic = createBucketClient({
   bucketSlug: process.env.COSMIC_BUCKET_SLUG as string,
@@ -137,5 +137,76 @@ export async function getServiceAreas() {
       return [];
     }
     throw new Error('Failed to fetch service areas');
+  }
+}
+
+// Fetch user by email
+export async function getUserByEmail(email: string) {
+  try {
+    const response = await cosmic.objects
+      .find({ 
+        type: 'users',
+        'metadata.email': email
+      })
+      .props(['id', 'title', 'slug', 'metadata'])
+      .depth(1);
+    
+    if (response.objects && response.objects.length > 0) {
+      return response.objects[0] as User;
+    }
+    return null;
+  } catch (error) {
+    if (hasStatus(error) && error.status === 404) {
+      return null;
+    }
+    throw new Error('Failed to fetch user');
+  }
+}
+
+// Fetch user by ID
+export async function getUserById(id: string) {
+  try {
+    const response = await cosmic.objects
+      .findOne({ 
+        type: 'users',
+        id
+      })
+      .props(['id', 'title', 'slug', 'metadata'])
+      .depth(1);
+    
+    return response.object as User;
+  } catch (error) {
+    if (hasStatus(error) && error.status === 404) {
+      return null;
+    }
+    throw new Error('Failed to fetch user');
+  }
+}
+
+// Create new user
+export async function createUser(userData: {
+  full_name: string;
+  email: string;
+  password_hash: string;
+  phone_number?: string;
+  role: 'Admin' | 'Customer' | 'Driver';
+}) {
+  try {
+    const newUser = await cosmic.objects.insertOne({
+      type: 'users',
+      title: userData.full_name,
+      metadata: {
+        full_name: userData.full_name,
+        email: userData.email,
+        password_hash: userData.password_hash,
+        phone_number: userData.phone_number || '',
+        role: userData.role,
+        is_active: true
+      }
+    });
+    
+    return newUser.object as User;
+  } catch (error) {
+    throw new Error('Failed to create user');
   }
 }
