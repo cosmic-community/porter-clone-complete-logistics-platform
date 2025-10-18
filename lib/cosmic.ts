@@ -143,8 +143,11 @@ export async function getServiceAreas() {
 // Fetch user by email
 export async function getUserByEmail(email: string): Promise<User | null> {
   try {
-    console.log('Fetching user by email from Cosmic:', email)
-    console.log('Using bucket:', process.env.COSMIC_BUCKET_SLUG)
+    console.log('=== getUserByEmail Debug Info ===')
+    console.log('Email:', email)
+    console.log('Bucket Slug:', process.env.COSMIC_BUCKET_SLUG)
+    console.log('Read Key exists:', !!process.env.COSMIC_READ_KEY)
+    console.log('Write Key exists:', !!process.env.COSMIC_WRITE_KEY)
     
     const response = await cosmic.objects
       .find({ 
@@ -154,27 +157,43 @@ export async function getUserByEmail(email: string): Promise<User | null> {
       .props(['id', 'title', 'slug', 'metadata'])
       .depth(1);
     
-    console.log('Cosmic API response:', JSON.stringify(response, null, 2))
+    console.log('Cosmic API response status: Success')
+    console.log('Objects found:', response.objects ? response.objects.length : 0)
     
     if (response.objects && response.objects.length > 0) {
-      console.log('User found in Cosmic:', response.objects[0].id)
-      console.log('User metadata:', JSON.stringify(response.objects[0].metadata, null, 2))
+      console.log('User found:', response.objects[0].id)
+      console.log('User email:', response.objects[0].metadata?.email)
+      console.log('User role:', response.objects[0].metadata?.role)
       return response.objects[0] as User;
     }
     
     console.log('No user found in Cosmic for email:', email)
-    console.log('Total users found:', response.objects ? response.objects.length : 0)
     return null;
   } catch (error) {
-    console.error('Error fetching user by email:', error)
-    console.error('Error details:', JSON.stringify(error, null, 2))
+    console.error('=== getUserByEmail Error ===')
+    console.error('Error type:', error?.constructor?.name)
+    console.error('Error message:', error instanceof Error ? error.message : 'Unknown')
     
-    if (hasStatus(error) && error.status === 404) {
-      console.log('404 error - no users object type exists or no users found in Cosmic')
-      return null;
+    // Log the full error object for debugging
+    if (error && typeof error === 'object') {
+      console.error('Error keys:', Object.keys(error))
+      console.error('Full error:', JSON.stringify(error, Object.getOwnPropertyNames(error), 2))
     }
     
-    throw new Error(`Failed to fetch user: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    if (hasStatus(error)) {
+      console.error('HTTP Status:', error.status)
+      if (error.status === 404) {
+        console.log('404 error - no users object type exists or no users found')
+        return null;
+      }
+    }
+    
+    // Re-throw with preserved error message
+    if (error instanceof Error) {
+      throw error; // Preserve the original error
+    }
+    
+    throw new Error('Failed to fetch user: Unknown error occurred');
   }
 }
 
