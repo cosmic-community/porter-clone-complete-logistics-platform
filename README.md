@@ -19,6 +19,19 @@ A comprehensive logistics and delivery platform that replicates all core Porter 
 - 📱 **Responsive Design** - Works seamlessly on all devices
 - 🔐 **Secure Authentication** - Role-based access for customers, drivers, and admins
 
+## Demo Credentials
+
+### Admin Access
+- **Email**: `admin@porterclone.com`
+- **Password**: `admin123`
+- **Access**: Full administrative dashboard at `/admin`
+
+### Customer Access
+You can register a new customer account at `/register` or use the registration form to create a test account.
+
+### Driver Access
+Register as a driver by selecting "Driver" role during registration at `/register`.
+
 ## Clone this Project
 
 Want to create your own version of this project with all the content and structure? Clone this Cosmic bucket and code repository to get started instantly:
@@ -60,136 +73,3 @@ The app has been tailored to work with your existing Cosmic content structure an
 ### Installation
 
 1. Clone the repository:
-```bash
-git clone <your-repo-url>
-cd porter-clone
-```
-
-2. Install dependencies:
-```bash
-bun install
-```
-
-3. Set up environment variables:
-```bash
-cp .env.example .env.local
-```
-
-Add your Cosmic credentials:
-```env
-COSMIC_BUCKET_SLUG=your-bucket-slug
-COSMIC_READ_KEY=your-read-key
-COSMIC_WRITE_KEY=your-write-key
-```
-
-4. Run the development server:
-```bash
-bun dev
-```
-
-5. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## Cosmic SDK Examples
-
-### Fetching Delivery Orders
-```typescript
-import { cosmic } from '@/lib/cosmic'
-
-const orders = await cosmic.objects
-  .find({
-    type: 'orders'
-  })
-  .props(['id', 'title', 'slug', 'metadata'])
-  .depth(1)
-
-return orders.objects
-```
-
-### Creating a New Booking
-```typescript
-const newOrder = await cosmic.objects.insertOne({
-  type: 'orders',
-  title: `Order #${Date.now()}`,
-  metadata: {
-    customer_name: 'John Doe',
-    pickup_address: '123 Main St',
-    delivery_address: '456 Oak Ave',
-    vehicle_type: vehicleId,
-    status: 'Pending',
-    payment_method: 'Cash',
-    total_amount: '500'
-  }
-})
-```
-
-### Updating Order Status
-```typescript
-await cosmic.objects.updateOne(orderId, {
-  metadata: {
-    status: 'In Transit'
-  }
-})
-```
-
-## Cosmic CMS Integration
-
-This application uses Cosmic CMS to manage:
-
-- **Vehicle Types** - Bikes, tempos, trucks with pricing and capacity
-- **Delivery Orders** - Complete order management with status tracking
-- **Driver Profiles** - Driver information, ratings, and availability
-- **Service Areas** - Geographic coverage and pricing zones
-- **Pricing Rules** - Base rates, distance charges, and surge pricing
-- **Customer Data** - Customer profiles and order history
-- **Support Tickets** - Customer support and issue tracking
-- **Payment Records** - Transaction history and invoicing
-
-All content is fetched dynamically from your Cosmic bucket, making it easy to update vehicles, pricing, service areas, and other business rules without code changes.
-
-## Deployment
-
-### Deploy to Vercel
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone)
-
-1. Click the "Deploy" button above
-2. Connect your GitHub repository
-3. Add your environment variables:
-   - `COSMIC_BUCKET_SLUG`
-   - `COSMIC_READ_KEY`
-   - `COSMIC_WRITE_KEY`
-4. Deploy!
-
-### Environment Variables
-
-Make sure to set these in your deployment platform:
-
-- `COSMIC_BUCKET_SLUG` - Your Cosmic bucket slug
-- `COSMIC_READ_KEY` - Your Cosmic read key
-- `COSMIC_WRITE_KEY` - Your Cosmic write key (for creating/updating orders)
-
-## Project Structure
-
-```
-porter-clone/
-├── app/
-│   ├── layout.tsx           # Root layout with global styles
-│   ├── page.tsx             # Homepage with booking form
-│   ├── dashboard/           # Main dashboard
-│   ├── orders/              # Order management
-│   ├── drivers/             # Driver management
-│   ├── fleet/               # Vehicle fleet management
-│   ├── analytics/           # Analytics and reports
-│   ├── support/             # Customer support
-│   └── api/                 # API routes
-├── components/              # Reusable components
-├── lib/                     # Utilities and Cosmic client
-├── types.ts                 # TypeScript definitions
-└── public/                  # Static assets
-```
-
-## License
-
-MIT License - feel free to use this project for your own logistics platform!
-
-<!-- README_END -->
